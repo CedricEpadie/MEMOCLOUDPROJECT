@@ -100,18 +100,15 @@ WSGI_APPLICATION = 'MEMOCLOUDPROJECT.wsgi.application'
 #     }
 # }
 
-from decouple import config
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', default='5432'),
-    }
+    'default': dj_database_url.parse(
+        'postgresql://memoclouddatabase_user:SOZd1gwTjNJFM0pJGWlPmnMlpajC5U2E@dpg-ctvtca2j1k6c73ds8hd0-a.oregon-postgres.render.com/memoclouddatabase',
+        conn_max_age=600,
+    )
 }
+
 
 
 # Password validation
