@@ -1,0 +1,192 @@
+<section x-show="activeSection === 'encadrements'" class="p-6 border border-gray-700 dark:border-gray-600 rounded-lg shadow-lg transition max-w-4xl mx-auto mt-8">
+    <div id="spinner-visiteurs" class="spinner-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+    <h2 class="text-xl font-semibold mb-4">Encadrements</h2>
+    <button type="button" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow transition focus:outline-none" data-bs-toggle="modal" data-bs-target="#addEncadrementModal">
+        Ajouter un Encadrement
+    </button>
+   
+    <!-- Modal pour modifier l'encadrement -->
+    <div class="modal fade" id="editEncadrementModal" tabindex="-1" aria-labelledby="editEncadrementModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content dark:bg-gray-800 dark:text-gray-100">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEncadrementModalLabel">Modifier l'Encadrement</h5>
+                    <button type="button" class="btn-close dark:bg-gray-700 dark:hover:bg-gray-600" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulaire pour modifier l'encadrement -->
+                    <form  class="myForm" id="editEncadrementForm" action="{% url 'edit_encadrement' %}" method="POST">
+                        {% csrf_token %}
+                        <!-- Champ caché pour l'ID de l'encadrement -->
+                        <input type="hidden" id="encadrement_id" name="encadrement_id">
+
+                        <!-- Sélection du mémoire -->
+                        <div class="mb-3">
+                            <label for="memoire" class="form-label">Mémoire</label>
+                            <select class="form-select bg-gray-100 dark:bg-gray-700 dark:text-gray-300" id="memoire" name="memoire" required>
+                                {% for memoire in memoires %}
+                                    <option value="{{ memoire.id }}" {% if encadrement.memoire.id == memoire.id %}selected{% endif %}>
+                                        {{ memoire.titre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Sélection de l'encadrant -->
+                        <div class="mb-3">
+                            <label for="encadrant" class="form-label">Encadrant</label>
+                            <select class="form-select bg-gray-100 dark:bg-gray-700 dark:text-gray-300" id="encadrant" name="encadrant" required>
+                                {% for user in utilisateurs %}
+                                    <option value="{{ user.id }}" {% if encadrement.encadrant.id == user.id %}selected{% endif %}>
+                                        {{ user.nom }} {{ user.prenom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md shadow transition focus:outline-none">Modifier l'Encadrement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+ <!-- Search and Filter Section for Encadrements -->
+<div class="mt-4">
+    <input type="text" id="encadrementSearchInput" placeholder="Recherche globale..." class="px-4 py-2 border rounded-md" onkeyup="searchTable('encadrementTable', 'encadrementSearchInput')">
+    <input type="text" id="encadrementMemoireFilter" placeholder="Filtrer par Mémoire" class="px-4 py-2 border rounded-md" onkeyup="filterTable('encadrementTable', 'encadrementMemoireFilter', 1)">
+    <input type="text" id="encadrementEncadrantFilter" placeholder="Filtrer par Encadrant" class="px-4 py-2 border rounded-md" onkeyup="filterTable('encadrementTable', 'encadrementEncadrantFilter', 2)">
+    <button onclick="clearFilters('encadrementTable', 'encadrementSearchInput', 'encadrementMemoireFilter', 'encadrementEncadrantFilter')" class="px-4 py-2 bg-gray-500 text-white rounded-md">Effacer filtres</button>
+</div>
+
+<!-- Encadrements Table -->
+<div class="overflow-x-auto mt-4">
+    <table id="encadrementTable" class="min-w-full border-collapse border border-gray-300 dark:border-gray-700">
+        <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">ID</th>
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Mémoire</th>
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Encadrant</th>
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for encadrement in encadrements %}
+                <tr >
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ encadrement.id }}</td>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ encadrement.memoire.titre }}</td>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ encadrement.encadrant.nom }}</td>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">
+                        <button class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md shadow transition focus:outline-none" onclick="deleteEncadrement({{ encadrement.id }})">
+                            Supprimer
+                        </button>
+                        <button type="button" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md shadow transition focus:outline-none" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#editEncadrementModal"
+                            data-encadrement_id="{{ encadrement.id }}"
+                            data-memoire="{{ encadrement.memoire.id }}"
+                            data-encadrant="{{ encadrement.encadrant.id }}">
+                            Modifier
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% if messages %}
+    <div class="messages" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 9999;">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+   
+    
+    <!-- Modal pour ajouter un encadrement -->
+    <div class="modal fade" id="addEncadrementModal" tabindex="-1" aria-labelledby="addEncadrementModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content dark:bg-gray-800 dark:text-gray-100">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEncadrementModalLabel">Ajouter un Encadrement</h5>
+                    <button type="button" class="btn-close dark:bg-gray-700 dark:hover:bg-gray-600" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form  class="myForm" id="addEncadrementForm" action="{% url 'add_encadrement' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="memoire" class="form-label">Mémoire</label>
+                            <select class="form-select bg-gray-100 dark:bg-gray-700 dark:text-gray-300" id="memoire" name="memoire" required>
+                                {% for memoire in memoires %}
+                                    <option value="{{ memoire.id }}">{{ memoire.titre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="encadrant" class="form-label">Encadrant</label>
+                            <select class="form-select bg-gray-100 dark:bg-gray-700 dark:text-gray-300" id="encadrant" name="encadrant" required>
+                                {% for user in utilisateurs %}
+                                    <option value="{{ user.id }}">{{ user.prenom }} {{ user.nom }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow transition focus:outline-none">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="ov2" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 9999;"></div>
+
+<!-- Infobulle -->
+<div id="tol2" class="tooltip" style="display:none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); padding: 10px 20px; background-color: #4CAF50; color: white; border-radius: 5px; z-index: 10000;">
+<span id="mes2"></span>
+<button onclick="closeTooltip('ov2','tol2')">Fermer</button>
+</div>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const spinner = document.getElementById('spinner-visiteurs');
+        
+        // Masquer le spinner immédiatement après que la page soit prête
+        spinner.style.display = 'none';
+    
+        // Fonction pour afficher le spinner
+        function showSpinner() {
+            spinner.style.display = 'flex';  // Affiche le spinner (mode flex pour centrer)
+        }
+    
+        // Fonction pour masquer le spinner
+        function hideSpinner() {
+            spinner.style.display = 'none'; // Cache le spinner
+        }
+    
+        // Afficher le spinner lors de l'envoi d'une recherche
+        document.getElementById('visiteurSearchInput').addEventListener('keyup', function() {
+            showSpinner(); // Affiche le spinner lors de la recherche
+            setTimeout(() => {
+                hideSpinner(); // Masque le spinner après un délai (simulateur de chargement)
+            }, 500);  // Simuler un temps de recherche
+        });
+    
+        // Afficher le spinner lors du filtrage des visiteurs
+        document.getElementById('visiteurEmailFilter').addEventListener('keyup', function() {
+            showSpinner(); // Affiche le spinner lors du filtrage
+            setTimeout(() => {
+                hideSpinner(); // Masque le spinner après un délai (simulateur de filtrage)
+            }, 500);  // Simuler un temps de filtrage
+        });
+    
+        // Masquer le spinner après le chargement complet de la page
+        window.addEventListener('load', () => {
+            hideSpinner(); // Cache le spinner une fois la page chargée
+        });
+    });
+    
+</script>
+</section>
+
+

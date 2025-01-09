@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="spinner" class="spinner-overlay" style="display: none;">
+    <div class="spinner loader"></div>
+</div>
+<div class="p-6 mb-4 border border-gray-700 dark:border-gray-600 rounded-lg shadow-lg transition max-w-4xl mx-auto mt-8">
+    <!-- Titre -->
+    <h2 class="text-2xl font-bold mb-6 text-center">Mon Profil</h2>
+
+    <!-- Conteneur principal -->
+    <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+        <!-- Section Avatar -->
+        {% if user.photo_profil %}
+        <div class="flex-shrink-0">
+            <img src="{{ user.photo_profil.url }}" alt="Avatar" 
+                 class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-gray-200 dark:border-gray-700 shadow-lg">
+        </div>
+            {% endif %}
+        
+
+        <!-- Section Informations utilisateur -->
+        <div class="flex-grow">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-lg font-medium"><strong>Nom :</strong> {{ user.nom }} {{ user.prenom }}</p>
+                </div>
+                <div>
+                    <p class="text-lg font-medium"><strong>Email :</strong> {{ user.email }}</p>
+                </div>
+                <div>
+                    <p class="text-lg font-medium"><strong>Date de naissance :</strong> {{ user.birthday|date:"d/m/Y" }}</p>
+                </div>
+                <div>
+                    <p class="text-lg font-medium"><strong>Sexe :</strong> {{ user.get_sexe_display }}</p>
+                </div>
+                <div>
+                    <p class="text-lg font-medium"><strong>Type :</strong> {{ user.get_type_display }}</p>
+                </div>
+                <div>
+                    <p class="text-lg font-medium"><strong>LinkedIn :</strong> 
+                        <a href="{{ user.realisation_linkedin }}" target="_blank" class="text-blue-500 underline">
+                            {{ user.realisation_linkedin }}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton Modifier Profil -->
+    <div class="mt-8 text-center">
+        <a href="{% url 'edit_profile' %}" 
+           class="btn btn-info"
+           id="editProfileBtn">
+            Modifier Profil
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Spinner */
+    .loader {
+        border: 4px solid rgba(0, 0, 0, 0.1); /* Base border */
+        border-top-color: #3498db; /* Spinner color */
+        border-radius: 50%; /* Circle shape */
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    /* Animation du spinner */
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Overlay qui couvre toute la page pour afficher le spinner */
+    .spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    /* Masquer l'overlay initialement */
+    #spinner {
+        display: none;
+    }
+</style>
+
+<script>
+    // Fonction pour afficher le spinner
+    function showSpinner() {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'flex';  // Affiche le spinner (mode flex pour le centrer)
+    }
+
+    // Fonction pour masquer le spinner
+    function hideSpinner() {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'none';  // Cache le spinner
+    }
+
+    // Intercepter le clic sur le lien "Modifier Profil"
+    document.getElementById('editProfileBtn').addEventListener('click', function(event) {
+        event.preventDefault();  // Empêche la redirection immédiate
+        showSpinner();           // Affiche le spinner
+
+        // Redirige après un court délai pour permettre l'affichage du spinner
+        setTimeout(() => {
+            window.location.replace(this.href);  // Utilisez window.location.replace pour rediriger sans retour
+        }, 500);  // Attendre 500ms avant de rediriger
+    });
+
+    // Masquer le spinner après le chargement complet de la page
+    window.addEventListener('load', () => {
+        hideSpinner();  // Cache le spinner une fois la page chargée
+    });
+</script>
+
+{% endblock content %}

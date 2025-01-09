@@ -1,0 +1,39 @@
+<section x-show="activeSection === 'TELECHARGEMENTS'" class="p-6 border border-gray-700 dark:border-gray-600 rounded-lg shadow-lg transition max-w-4xl mx-auto mt-8"
+    <h2 class="text-xl font-semibold mb-4">LISTE LES TELECHARGEMENTS</h2>
+   
+
+   
+
+    <!-- Search and Filter Section -->
+<div class="mt-4">
+    <input type="text" id="telechargementSearchInput" placeholder="Recherche globale..." class="px-4 py-2 border rounded-md" onkeyup="searchTable('telechargementTable', 'telechargementSearchInput')">
+    <input type="text" id="telechargementEmailFilter" placeholder="Filtrer par Email" class="px-4 py-2 border rounded-md" onkeyup="filterTable('telechargementTable', 'telechargementEmailFilter', 1)">
+    <input type="text" id="telechargementMemoireFilter" placeholder="Filtrer par Mémoire" class="px-4 py-2 border rounded-md" onkeyup="filterTable('telechargementTable', 'telechargementMemoireFilter', 2)">
+    <button onclick="clearFilters('telechargementTable', 'telechargementSearchInput', 'telechargementEmailFilter', 'telechargementMemoireFilter')" class="px-4 py-2 bg-gray-500 text-white rounded-md">Effacer filtres</button>
+</div>
+
+<!-- Téléchargements Table -->
+<div class="overflow-x-auto mt-4">
+    <table id="telechargementTable" class="min-w-full border-collapse border border-gray-300 dark:border-gray-700">
+        <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">ID</th>
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">EMAIL</th>
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">MEMOIRE TÉLÉCHARGÉE</th>
+                <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">DATE</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for users in telechargement %}
+                <tr class=>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ users.id }}</td>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ users.emailt }}</td>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ users.memoire.titre }}</td>
+                    <td class="border border-gray-300 dark:border-gray-700 px-4 py-2">{{ users.datet }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    
+</section>

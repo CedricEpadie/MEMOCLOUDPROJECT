@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a192f;
+            --bg-secondary: #112240;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --accent-primary: #64ffda;
+            --accent-secondary: #303c55;
+            --btn-hover: #2d8b8f;
+        }
+
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-primary) var(--bg-secondary);
+        }
+
+        *::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--accent-primary);
+            border-radius: 20px;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden;
+            height: 100%; /* S'assurer que le corps prend toute la hauteur de l'écran */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Permet de centrer tout le contenu sur l'écran */
+        }
+
+        .register-container {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-primary));
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            overflow-y: auto; /* Permet de scroller si nécessaire */
+            max-height: 90vh; /* Limite la hauteur du formulaire à 90% de la hauteur de l'écran */
+        }
+
+        .register-title {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-row.full-width {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 5px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.2);
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .register-button:hover {
+            background: var(--btn-hover);
+        }
+
+        .login-link {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .login-link:hover {
+            color: var(--accent-primary);
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .messages .success {
+            background-color: rgba(100, 255, 218, 0.1);
+            border: 1px solid var(--accent-primary);
+        }
+
+        .messages .error {
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .register-title {
+                font-size: 2em;
+            }
+
+            .register-button {
+                font-size: 1em;
+            }
+
+            .input-field {
+                padding: 12px;
+                font-size: 1em;
+            }
+        }
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none; /* Caché par défaut */
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="spinner" class="spinner-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+    
+    <div class="register-container">
+        <div class="register-title">Inscription</div>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form action="/register" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <input type="text" class="input-field" name="nom" placeholder="Nom" value="{{ form_data.nom|default:'' }}" required>
+                <input type="text" class="input-field" name="prenom" placeholder="Prénom" value="{{ form_data.prenom|default:'' }}" required>
+            </div>
+            <div class="form-row">
+                <label for="birthday" class="form-label">Date de naissance:</label>
+                <input type="date" class="input-field" name="birthday" value="{{ form_data.birthday|default:'' }}" required>
+                <select name="sexe" class="input-field" required>
+                    <option value="" disabled {% if not form_data.sexe %}selected{% endif %}>Sexe</option>
+                    <option value="M" {% if form_data.sexe == "M" %}selected{% endif %}>Masculin</option>
+                    <option value="F" {% if form_data.sexe == "F" %}selected{% endif %}>Féminin</option>
+                    <option value="A" {% if form_data.sexe == "A" %}selected{% endif %}>Autre</option>
+                </select>
+            </div>
+            <div class="form-row">
+
+                <input type="email" class="input-field" name="email" placeholder="Email" value="{{ form_data.email|default:'' }}" placeholder="votre date de naissance"required>
+                
+            </div>
+            <div class="form-row full-width">
+                <input type="url" class="input-field" name="realisation_linkedin" placeholder="Lien LinkedIn(optionnel) ex:https://www.linkedin.com/in/..../" value="{{ form_data.realisation_linkedin|default:'' }}">
+            </div>
+            <div class="form-row">
+                <input type="password" class="input-field" name="password" placeholder="Mot de passe" required>
+                <input type="password" class="input-field" name="confirm_password" placeholder="Confirmer le mot de passe" required>
+            </div>
+            <div class="form-row ">
+                <label for="photo_profil" class="block text-lg font-semibold mb-2">Photo de profil:</label>
+                <input type="file" class="input-field" name="photo_profil" placeholder="photo de profil" accept="image/*">
+            </div>
+            <button type="submit" class="register-button">S'inscrire</button>
+        </form>
+        
+        <div>
+            <a href="{% url 'login' %}" class="login-link">Déjà un compte ? Se connecter</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const spinner = document.getElementById('spinner');
+    
+            // Masquer le spinner immédiatement après que la page est prête
+            spinner.style.display = 'none';
+    
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    spinner.style.display = 'flex'; // Affiche le spinner lors de l'envoi du formulaire
+                });
+            }
+        });
+    </script>
+    
+</body>
+</html>
